@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>المسابقة الدولية لحفظ القرآن الكريم للعسكريين</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#00333a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="المسابقة" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <style>
+    html, body { margin:0; padding:0; height:100%; background:#00333a; overflow:hidden; font-family:sans-serif; }
+    #slides { position:relative; width:100%; height:100%; cursor:pointer; overflow:hidden; }
+
+    /* static blurred fills to cover corners */
+    #slides .bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+      filter:blur(20px) brightness(0.7); transform:scale(1.1); z-index:0; opacity:0; transition:opacity .4s ease; }
+    #slides .bg.active { opacity:1; }
+
+    /* crisp main images with smooth fade + slight zoom */
+    #slides .main { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; object-position:center;
+      opacity:0; transform:scale(1.05); transition:opacity 1.2s ease, transform 1.2s ease; z-index:1; }
+    #slides .main.active { opacity:1; transform:scale(1); z-index:2; }
+
+    #overlay { position:absolute; bottom:10%; left:50%; transform:translateX(-50%);
+      color:#fff; font-size:1.1rem; text-align:center; z-index:3; pointer-events:none; opacity:.9; transition:opacity .8s ease; }
+    #slides.show-second + #overlay { opacity:0; }
+  </style>
+</head>
+<body>
+  <div id="slides">
+    <img src="1.png" class="bg active" alt="">
+    <img src="2.png" class="bg" alt="">
+    <img src="1.png" class="main active" alt="الشاشة الأولى">
+    <img src="2.png" class="main" alt="الشاشة الثانية">
+  </div>
+  <div id="overlay">انقر في أي مكان للمتابعة</div>
+
+  <script>
+    (function () {
+      var slides = document.getElementById('slides');
+      var mains  = slides.querySelectorAll('.main');
+      var bgs    = slides.querySelectorAll('.bg');
+      var current = 0, timer;
+
+      function setActive(list, idx){ list.forEach((el,i)=>el.classList.toggle('active', i===idx)); }
+      function show(idx){ current = idx; setActive(mains, current); setActive(bgs, current); }
+
+      function toSecond(){
+        show(1); slides.classList.add('show-second');
+        clearTimeout(timer);
+        timer = setTimeout(function(){ show(0); slides.classList.remove('show-second'); }, 30000);
+      }
+
+      slides.addEventListener('click', function(){
+        if(current === 0) { toSecond(); }
+        else {
+          clearTimeout(timer);
+          timer = setTimeout(function(){ show(0); slides.classList.remove('show-second'); }, 30000);
+        }
+      });
+    })();
+
+    if ('serviceWorker' in navigator) {
+      addEventListener('load', function () { navigator.serviceWorker.register('./service-worker.js'); });
+    }
+  </script>
+</body>
+</html>
