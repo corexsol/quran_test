@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>المسابقة الدولية لحفظ القرآن الكريم</title>
+  <title>المسابقة الدولية لحفظ القرآن الكريم للعسكريين</title>
 
-  <!-- PWA -->
+  <!-- PWA hooks (keep your existing files) -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#00333a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -14,31 +14,64 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
   <style>
-    html, body { margin:0; padding:0; background:#00333a; height:100%; overflow:hidden; font-family:sans-serif; }
+    :root { --bg:#00333a; }
 
-    /* full-bleed stage */
-    #slides{
-      position:fixed; inset:0; overflow:hidden; cursor:pointer; touch-action:manipulation;
-      background:#00333a;
+    html, body {
+      margin:0; padding:0; background:var(--bg);
+      overflow:hidden; font-family:sans-serif;
     }
-    @supports (height: 100dvh) { #slides{ height:100dvh; } }
-    @supports not (height: 100dvh) { #slides{ height:100vh; } }
 
-    /* prevent selection/drag on iOS */
+    /* Full-bleed stage (no vh to avoid iPad rounding issues) */
+    #slides{
+      position:fixed; inset:0;
+      overflow:hidden; cursor:pointer; touch-action:manipulation;
+      background:var(--bg);
+    }
+
+    /* Prevent drag/select on iOS */
     img { -webkit-user-drag:none; user-select:none; -webkit-touch-callout:none; }
 
-    /* blurred fills */
-    .bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-         filter:blur(22px) brightness(0.75); transform:scale(1.12);
-         z-index:0; opacity:0; transition:opacity .4s ease; }
+    /* Blurred fill behind main image */
+    .bg{
+      position:absolute; inset:0; width:100%; height:100%;
+      object-fit:cover;
+      filter:blur(22px) brightness(0.75);
+      transform:scale(1.12);
+      z-index:0; opacity:0; transition:opacity .4s ease;
+    }
     .bg.active{ opacity:1; }
 
-    /* main images — now cover to eliminate bars */
-    .main{ position:absolute; inset:0; width:100%; height:100%;
-           object-fit:cover; object-position:center; z-index:1;
-           opacity:0; transform:scale(1.0);
-           transition:opacity 1.1s ease, transform 1.1s ease; }
-    .main.active{ opacity:1; transform:scale(1.0); z-index:2; }
+    /* Main slides — cover to eliminate side bars (minor crop) */
+    .main{
+      position:absolute; inset:0; width:100%; height:100%;
+      object-fit:cover; object-position:center;
+      z-index:1; opacity:0; transform:scale(1.0);
+      transition:opacity 1.1s ease, transform 1.1s ease;
+    }
+    .main.active{ opacity:1; z-index:2; }
+
+    /* Safe-area overlays to visually blend under iPad gesture/status bars */
+    #slides::before,
+    #slides::after{
+      content:"";
+      position:fixed; left:0; right:0; pointer-events:none; z-index:3;
+    }
+    /* Top status area (optional) */
+    #slides::before{
+      top:0;
+      height: env(safe-area-inset-top);
+      background: var(--bg);
+    }
+    /* Bottom gesture bar area */
+    #slides::after{
+      bottom:0;
+      height: env(safe-area-inset-bottom);
+      background: var(--bg);
+      /* For a softer blend, replace the 2 lines above with:
+      height: calc(env(safe-area-inset-bottom) + 18px);
+      background: linear-gradient(transparent, var(--bg));
+      */
+    }
   </style>
 </head>
 <body>
