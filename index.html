@@ -1,9 +1,9 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>المسابقة الدولية لحفظ القرآن الكريم للعسكريين</title>
+  <title>المسابقة الدولية لحفظ القرآن الكريم</title>
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
@@ -33,15 +33,12 @@
          z-index:0; opacity:0; transition:opacity .4s ease; }
     .bg.active{ opacity:1; }
 
-    /* main images */
-    .main{
-      position:absolute; inset:0; width:100%; height:100%;
-      object-fit:cover;            /* <— fill, allows slight crop */
-      object-position:center;
-      z-index:1; opacity:0; transform:scale(1.0);
-      transition:opacity 1.1s ease, transform 1.1s ease;
-      }
-    .main.active{ opacity:1; transform:scale(1); z-index:2; }
+    /* main images — now cover to eliminate bars */
+    .main{ position:absolute; inset:0; width:100%; height:100%;
+           object-fit:cover; object-position:center; z-index:1;
+           opacity:0; transform:scale(1.0);
+           transition:opacity 1.1s ease, transform 1.1s ease; }
+    .main.active{ opacity:1; transform:scale(1.0); z-index:2; }
   </style>
 </head>
 <body>
